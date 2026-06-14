@@ -10,4 +10,9 @@ permissions:
      zuri.command:
           default: op
           description: Zuri main command.
+commands:
+     zuri:
+          description: "Zuri main command."
+          usage: "/zuri"
+          permission: zuri.command
 ...

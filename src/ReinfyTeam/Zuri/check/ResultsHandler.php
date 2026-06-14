@@ -61,7 +61,23 @@ final class ResultsHandler {
 		if (($player = Server::getInstance()->getPlayerExact($results["player"])) !== null) {
 			$playerZuri = PlayerManager::get($player);
 
-			$check = unserialize($results["check"]);
+			// Support new async result format which sends the check class name,
+			// falling back to the old serialized check object when necessary.
+			if (isset($results["checkClass"])) {
+				$checkClass = $results["checkClass"];
+				$check = null;
+				foreach (ZuriAC::getCheckRegistry()->getChecks() as $registered) {
+					if (get_class($registered) === $checkClass) {
+						$check = $registered;
+						break;
+					}
+				}
+				if ($check === null && class_exists($checkClass)) {
+					$check = new $checkClass();
+				}
+			} else {
+				$check = unserialize($results["check"]);
+			}
 
 			if ($results["result"]["failed"]) {
 				self::handlePunishment($player, $check);

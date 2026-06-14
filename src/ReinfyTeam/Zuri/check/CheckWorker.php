@@ -139,10 +139,20 @@ class CheckWorker {
 	 * @return int Batch size (number of checks per batch).
 	 */
 	public function getBatchSize() : int {
+		// Allow explicit configuration of batch size; otherwise compute a reasonable default
+		$configured = ZuriAC::getConfigManager()->getData(ConfigPath::ASYNC_BATCH_SIZE, null);
+
+		if (is_int($configured) && $configured > 0) {
+			return $configured;
+		}
+
 		$players = count(Server::getInstance()->getOnlinePlayers());
 		$checks = count(ZuriAC::getCheckRegistry()->getChecks());
 
-		return max(1, $players * $checks * 8);
+		// Default multiplier used historically (players * checks * 8), but cap to avoid huge memory usage
+		$calculated = max(1, $players * $checks * 8);
+		$cap = 256; // avoid batches larger than this by default
+		return min($calculated, $cap);
 	}
 
 	/**

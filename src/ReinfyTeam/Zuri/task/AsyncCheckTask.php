@@ -49,26 +49,29 @@ class AsyncCheckTask extends AsyncTask {
 	 * @param array $batchCheck Array of serialized check payloads.
 	 */
 	public function __construct(array $batchCheck) {
-		static $checkBatch = [];
+		$checkBatch = [];
+
+		// Serialize constants once per task instead of per item
+		$constantsSerialized = serialize(ZuriAC::getConstants()->export());
+
 		foreach ($batchCheck as $data) {
 			$checkData = $data["checkData"];
 
-			$playerData = PlayerManager::get($checkData["player"]);
+			$playerObj = PlayerManager::get($checkData["player"]);
+			$player = $playerObj !== null ? $playerObj->jsonSerialize() : null;
 
-			$player = isset($checkData["player"]) ? $playerData->jsonSerialize() : null;
-			$check = serialize($data["check"]);
+			// Use the check class name instead of serializing the whole object
+			$checkClass = is_object($data["check"]) ? get_class($data["check"]) : (string) $data["check"];
 
-			$constants = serialize(ZuriAC::getConstants()->export());
+			$extraData = $checkData["data"] ?? null;
 
-			$data = isset($checkData["data"]) ? serialize($checkData["data"]) : null;
-
-			$checkBatch[] = serialize([
+			$checkBatch[] = [
 				"type" => $checkData["type"],
 				"player" => $player,
-				"check" => $check,
-				"data" => $data,
-				"constants" => $constants
-			]);
+				"checkClass" => $checkClass,
+				"data" => $extraData,
+				"constants" => $constantsSerialized
+			];
 		}
 
 		$this->batchCheck = serialize($checkBatch);
@@ -78,29 +81,28 @@ class AsyncCheckTask extends AsyncTask {
 	 * Executes the checks in the async worker and collects results.
 	 */
 	public function onRun() : void {
-		static $results = [];
-		foreach (unserialize($this->batchCheck) as $checkData) {
-			$checkData = unserialize($checkData);
+		$results = [];
 
-			$check = unserialize($checkData["check"]);
+		$batch = unserialize($this->batchCheck);
+		foreach ($batch as $checkData) {
+			$checkClass = $checkData["checkClass"];
 			$type = $checkData["type"];
 
 			$constants = unserialize($checkData["constants"]);
 
-			$playerData = isset($checkData["player"]) ? $checkData["player"] : null;
-			$data = isset($checkData["data"]) ? unserialize($checkData["data"]) : null;
+			$playerData = $checkData["player"] ?? null;
+			$data = $checkData["data"] ?? null;
 
-			static $result = [];
-
-			$result["result"] = $check::check([
+			$result = [];
+			$result["result"] = $checkClass::check([
 				"type" => $type,
 				"data" => $data,
 				"playerData" => $playerData,
 				"constantData" => $constants
 			]);
 
-			$result["check"] = serialize($check);
-			$result["player"] = $playerData["name"];
+			$result["checkClass"] = $checkClass;
+			$result["player"] = $playerData["name"] ?? null;
 
 			$results[] = $result;
 		}
