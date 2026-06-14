@@ -601,7 +601,7 @@ class EventListener implements Listener {
 	public function onCommandEvent(CommandEvent $event) : void {
 		$sender = $event->getSender();
 
-		if (!$player instanceof Player || !$player->isConnected()) {
+		if (!$sender instanceof Player || !$sender->isConnected()) {
 			return;
 		}
 
