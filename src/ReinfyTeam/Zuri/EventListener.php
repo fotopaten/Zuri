@@ -386,7 +386,7 @@ class EventListener implements Listener {
 				"port" => $event->getPort(),
 				"isAuthRequired" => $event->isAuthRequired(),
 				"getKickFlags" => $event->getKickFlags(),
-				"isKickFlagSet" => $event->isKickFlagSet(),
+				"isKickFlagSet" => $event->getKickFlags() !== [],
 				"getUsername" => $event->getPlayerInfo()->getUsername(),
 				"getLocale" => $event->getPlayerInfo()->getLocale(),
 				"getUuid" => $event->getPlayerInfo()->getUuid(),
