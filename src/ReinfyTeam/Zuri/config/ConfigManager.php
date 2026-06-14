@@ -67,7 +67,13 @@ class ConfigManager implements ConfigPath {
 	 * Retrieves nested configuration data by key.
 	 */
 	public function getData(string $key, mixed $default = null, array $replacements = []) : mixed {
-		return TextUtil::replaceText($this->config->getNested($key, $default ?? $key), $replacements);
+		$value = $this->config->getNested($key, $default ?? $key);
+
+		if (is_string($value) && $replacements !== []) {
+			return TextUtil::replaceText($value, $replacements);
+		}
+
+		return $value;
 	}
 
 	/**
