@@ -79,6 +79,9 @@ class ZuriAC extends Loader {
 		self::$checkRegistry = CheckRegistry::loadChecks();
 		self::$metricsData = new MetricsData();
 		self::registerEvents();
+
+		// Register plugin commands
+		Server::getInstance()->getCommandMap()->register('zuri', new \ReinfyTeam\Zuri\command\ZuriCommand());
 	}
 
 	/**
