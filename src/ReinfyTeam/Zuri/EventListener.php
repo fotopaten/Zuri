@@ -134,16 +134,20 @@ class EventListener implements Listener {
 			$playerZuri->setStartedJumping($packet->getInputFlags()->get(PlayerAuthInputFlags::START_JUMPING));
 
 			$frictionBlock = $player->getWorld()->getBlock($player->getPosition()->getSide(Facing::DOWN));
-			$playerZuri->setExternalData(ExternalDataPath::FRICTION_FACTOR, $playerZuri->isOnGround() ? $frictionBlock->getFrictionFactor() : ZuriAC::getConstants()->getConstant(ConstantPath::FRICTION_FACTOR));
+			$defaultFriction = 0.6;
+			$constantFriction = ZuriAC::getConstants()->getConstant(ConstantPath::FRICTION_FACTOR, $defaultFriction);
+			$frictionValue = $playerZuri->isOnGround() ? $frictionBlock->getFrictionFactor() : (float) $constantFriction;
+			$playerZuri->setExternalData(ExternalDataPath::FRICTION_FACTOR, $frictionValue);
 
-			$lastDistanceXZ = $playerZuri->getExternalData(ExternalDataPath::LAST_DISTANCE_XZ);
-			$frictionFactor = $playerZuri->getExternalData(ExternalDataPath::FRICTION_FACTOR);
+			$lastDistanceXZ = (float) $playerZuri->getExternalData(ExternalDataPath::LAST_DISTANCE_XZ);
+			$frictionFactor = (float) $playerZuri->getExternalData(ExternalDataPath::FRICTION_FACTOR);
 			$playerZuri->setExternalData(ExternalDataPath::MOMENTUM, MathUtil::getMomentum($lastDistanceXZ, $frictionFactor));
 
-			$movement = MathUtil::getMovement($player, new Vector3(max(-1, min(1, $packet->getMoveVecZ())), 0, max(-1, min(1, $packet->getMoveVecX()))));
+			$moveVec = new Vector3(max(-1, min(1, $packet->getMoveVecZ())), 0, max(-1, min(1, $packet->getMoveVecX())));
+			$movement = (float) sqrt(($moveVec->getX() ** 2) + ($moveVec->getZ() ** 2));
 			$playerZuri->setExternalData(ExternalDataPath::MOVEMENT, $movement);
 
-			$movementMultiplier = Utils::getMovementMultiplier($player);
+			$movementMultiplier = (float) Utils::getMovementMultiplier($player);
 			$acceleration = MathUtil::getAcceleration($movement, $movementMultiplier, $frictionFactor, $playerZuri->isOnGround());
 			$playerZuri->setExternalData(ExternalDataPath::MOVEMENT_MULTIPLIER, $movementMultiplier);
 			$playerZuri->setExternalData(ExternalDataPath::ACCELERATION, $acceleration);
