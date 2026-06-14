@@ -171,7 +171,7 @@ class EventListener implements Listener {
 
 		$playerZuri = PlayerManager::get($player);
 
-		if ($event->isCancelled()) {
+		if (method_exists($event, 'isCancelled') && $event->isCancelled()) {
 			$playerZuri->setRecentlyCancelledEvent(microtime(true));
 		}
 
@@ -220,7 +220,7 @@ class EventListener implements Listener {
 
 		$playerZuri = PlayerManager::get($player);
 
-		if ($event->isCancelled()) {
+		if (method_exists($event, 'isCancelled') && $event->isCancelled()) {
 			$playerZuri->setRecentlyCancelledEvent(microtime(true));
 		}
 
@@ -247,7 +247,7 @@ class EventListener implements Listener {
 
 		$playerZuri = PlayerManager::get($player);
 
-		if ($event->isCancelled()) {
+		if (method_exists($event, 'isCancelled') && $event->isCancelled()) {
 			$playerZuri->setRecentlyCancelledEvent(microtime(true));
 		}
 
@@ -273,7 +273,7 @@ class EventListener implements Listener {
 
 		$playerZuri = PlayerManager::get($player);
 
-		if ($event->isCancelled()) {
+		if (method_exists($event, 'isCancelled') && $event->isCancelled()) {
 			$playerZuri->setRecentlyCancelledEvent(microtime(true));
 		}
 
@@ -297,7 +297,7 @@ class EventListener implements Listener {
 
 		$playerZuri = PlayerManager::get($player);
 
-		if ($event->isCancelled()) {
+		if (method_exists($event, 'isCancelled') && $event->isCancelled()) {
 			$playerZuri->setRecentlyCancelledEvent(microtime(true));
 		}
 
@@ -321,7 +321,7 @@ class EventListener implements Listener {
 
 		$playerZuri = PlayerManager::get($player);
 
-		if ($event->isCancelled()) {
+		if (method_exists($event, 'isCancelled') && $event->isCancelled()) {
 			$playerZuri->setRecentlyCancelledEvent(microtime(true));
 		}
 
@@ -351,7 +351,7 @@ class EventListener implements Listener {
 
 		$playerZuri = PlayerManager::get($player);
 
-		if ($event->isCancelled()) {
+		if (method_exists($event, 'isCancelled') && $event->isCancelled()) {
 			$playerZuri->setRecentlyCancelledEvent(microtime(true));
 		}
 
@@ -415,7 +415,7 @@ class EventListener implements Listener {
 
 		$playerZuri = PlayerManager::get($player);
 
-		if ($event->isCancelled()) {
+		if (method_exists($event, 'isCancelled') && $event->isCancelled()) {
 			$playerZuri->setRecentlyCancelledEvent(microtime(true));
 		}
 
@@ -450,7 +450,7 @@ class EventListener implements Listener {
 
 		$playerZuri = PlayerManager::get($player);
 
-		if ($event->isCancelled()) {
+		if (method_exists($event, 'isCancelled') && $event->isCancelled()) {
 			$playerZuri->setRecentlyCancelledEvent(microtime(true));
 		}
 
@@ -493,7 +493,7 @@ class EventListener implements Listener {
 
 		$playerZuri = PlayerManager::get($player);
 
-		if ($event->isCancelled()) {
+		if (method_exists($event, 'isCancelled') && $event->isCancelled()) {
 			$playerZuri->setRecentlyCancelledEvent(microtime(true));
 		}
 

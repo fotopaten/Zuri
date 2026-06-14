@@ -15,10 +15,10 @@ class ZuriCommand extends Command {
 		$this->setPermission("zuri.command");
 	}
 
-	public function execute(CommandSender $sender, string $commandLabel, array $args) : void {
+	public function execute(CommandSender $sender, string $commandLabel, array $args) : bool {
 		if (!$this->testPermissionSilent($sender)) {
 			$sender->sendMessage("No tienes permiso para usar este comando.");
-			return;
+			return true;
 		}
 
 		$sub = $args[0] ?? "help";
@@ -26,14 +26,14 @@ class ZuriCommand extends Command {
 		switch (strtolower($sub)) {
 			case "version":
 				$sender->sendMessage("Zuri version: " . ZuriAC::getInstance()->getDescription()->getVersion());
-				break;
+				return true;
 			case "reload":
 				ZuriAC::getInstance()->reloadConfig();
 				$sender->sendMessage("Zuri: configuración recargada.");
-				break;
+				return true;
 			default:
 				$sender->sendMessage("Uso: /zuri <help|version|reload>");
-				break;
+				return true;
 		}
 	}
 }
