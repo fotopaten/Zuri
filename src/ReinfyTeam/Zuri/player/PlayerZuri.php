@@ -48,12 +48,13 @@ use function microtime;
  * Stores movement, timing, and environmental state used by checks.
  */
 class PlayerZuri extends Violation implements JsonSerializable, ExternalDataPath {
+	private Player $player;
+
 	/**
 	 * @param Player $player The underlying PocketMine player instance.
 	 */
-	public function __construct(
-		private readonly Player $player
-	) {
+	public function __construct(Player $player) {
+		$this->player = $player;
 		$this->updateData($player);
 	}
 
@@ -105,6 +106,7 @@ class PlayerZuri extends Violation implements JsonSerializable, ExternalDataPath
 	private float $hurtTicks = 0.0;
 	private float $projectileAttackTicks = 0.0;
 	private float $lastMoveTick = 0.0;
+	private float $commandTicks = 0.0;
 	private float $teleportCommandTicks = 0.0;
 	private float $eventCancelled = 0.0;
 	private float $explosionTicks = 0.0;
@@ -126,6 +128,8 @@ class PlayerZuri extends Violation implements JsonSerializable, ExternalDataPath
 	private int $playMode = 0;
 	private int $interactionMode = 0;
 	private int $tick = 0;
+	private float $moveVecX = 0.0;
+	private float $moveVecZ = 0.0;
 
 	private Vector3 $delta;
 	private Vector3 $motion;
@@ -264,6 +268,14 @@ class PlayerZuri extends Violation implements JsonSerializable, ExternalDataPath
 
 	public function setTeleportCommandTicks(float $data) : void {
 		$this->teleportCommandTicks = $data;
+	}
+
+	public function getCommandTicks() : float {
+		return (microtime(true) - $this->commandTicks) * 20;
+	}
+
+	public function setCommandTicks(float $data) : void {
+		$this->commandTicks = $data;
 	}
 
 	public function getHurtTicks() : float {
@@ -591,6 +603,22 @@ class PlayerZuri extends Violation implements JsonSerializable, ExternalDataPath
 		$this->rawMove = $rawMove;
 	}
 
+	public function getMoveVecX() : float {
+		return $this->moveVecX;
+	}
+
+	public function setMoveVecX(float $moveVecX) : void {
+		$this->moveVecX = $moveVecX;
+	}
+
+	public function getMoveVecZ() : float {
+		return $this->moveVecZ;
+	}
+
+	public function setMoveVecZ(float $moveVecZ) : void {
+		$this->moveVecZ = $moveVecZ;
+	}
+
 	public function setAllowFlight(bool $allowFlight) : void {
 		$this->allowFlight = $allowFlight;
 	}
@@ -676,7 +704,7 @@ class PlayerZuri extends Violation implements JsonSerializable, ExternalDataPath
 	}
 
 	public function setExplosionTicks(float $explosionTick) : void {
-		$this->explosionTick = $explosionTick;
+		$this->explosionTicks = $explosionTick;
 	}
 
 	public function getExplosionTicks() : float {
@@ -726,8 +754,11 @@ class PlayerZuri extends Violation implements JsonSerializable, ExternalDataPath
 			"hurtTicks" => $this->getHurtTicks(),
 			"projectileAttackTicks" => $this->getProjectileAttackTicks(),
 			"lastMoveTick" => $this->getLastMoveTick(),
+			"commandTicks" => $this->getCommandTicks(),
 			"teleportCommandTicks" => $this->getTeleportCommandTicks(),
 			"cps" => $this->getCPS(),
+			"moveVecX" => $this->getMoveVecX(),
+			"moveVecZ" => $this->getMoveVecZ(),
 			"motion" => Utils::vector3ToArray($this->getMotion()),
 			"onlineTime" => $this->getOnlineTime(),
 			"movement" => [
