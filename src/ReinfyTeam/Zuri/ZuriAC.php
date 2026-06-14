@@ -32,6 +32,7 @@ declare(strict_types=1);
 namespace ReinfyTeam\Zuri;
 
 use pocketmine\utils\SingletonTrait;
+use pocketmine\Server;
 use ReinfyTeam\Zuri\check\CheckRegistry;
 use ReinfyTeam\Zuri\check\CheckWorker;
 use ReinfyTeam\Zuri\check\MetricsData;
